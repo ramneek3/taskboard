@@ -58,7 +58,9 @@ Not applied. No cluster, VPC, or NAT gateway was created. `terraform plan` did n
 
 ## GitHub Actions and GHCR
 
-Not verified by a live run. The workflow file passed `actionlint`. Images were built locally by Docker, not pushed to GHCR by this workspace.
+Actions run [38859671050](https://github.com/ramneek3/taskboard/actions/runs/38859671050) on `d5f4f6c` succeeded for Helm lint and template, Terraform validate, Test and build frontend, and Build images and Trivy gate.
+
+Publish immutable images to GHCR failed while pushing `ghcr.io/ramneek3/taskboard-backend:d5f4f6c0ca89bcdcc5627652f8e2eed638901d49`. The registry returned `denied: permission_denied: write_package`. The job already had `packages: write`. The package name is not the repository name, and the image had no `org.opencontainers.image.source` label, so `GITHUB_TOKEN` could not create it. The publish job now logs in as the repository owner, keeps `packages: write`, adds `attestations: write` and `id-token: write`, and pushes the same commit-SHA tags with that source label. This file does not claim that later publish succeeded.
 
 ## Argo CD, Prometheus, Grafana
 
@@ -73,8 +75,8 @@ Not verified by a live run. The workflow file passed `actionlint`. Images were b
 | Tests | Complete. 13 backend tests passed |
 | Git/GitHub | Files and ignore rules are here. Remote publish is the push recorded at the bottom of this file after it succeeds |
 | Docker/Compose | Complete. Built and run |
-| GitHub Actions | Workflow written and linted. Live run not done |
-| Trivy | Local image scan clean for HIGH/CRITICAL. CI scan not executed by Actions |
+| GitHub Actions | Live run on `d5f4f6c` passed tests, Trivy, Terraform, and Helm. Publish failed with `write_package` and is fixed in the workflow after that run |
+| Trivy | Local image scan clean for HIGH/CRITICAL. The CI scan job on `d5f4f6c` succeeded |
 | Terraform/AWS | HCL validates. Apply and destroy not done |
 | Kubernetes/Helm | Chart renders and kubeconform is clean. Not installed on a cluster |
 | Prometheus/Grafana | Local scrape and dashboard provisioning worked. In-cluster install not done |
@@ -83,7 +85,7 @@ Not verified by a live run. The workflow file passed `actionlint`. Images were b
 ## Blockers
 
 - No AWS credentials, so plan/apply/destroy and a real EKS install cannot be finished here
-- No permission was used to run GitHub Actions or to push images to GHCR from Actions
+- The first Actions publish was denied by GHCR (`write_package`). The workflow change after that run is the fix; a green package push is not recorded here until a later run shows it
 - No Argo CD control plane
 - Presentation video cannot honestly include those live systems until you run them
 

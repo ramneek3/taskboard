@@ -63,10 +63,18 @@ jobs:
           echo "frontend=${prefix}-frontend" >> "$GITHUB_OUTPUT"
 
       - name: Build backend image
-        run: docker build -t "${{ steps.names.outputs.backend }}:${{ github.sha }}" ./backend
+        run: |
+          docker build \
+            --build-arg "IMAGE_SOURCE=https://github.com/${GITHUB_REPOSITORY}" \
+            -t "${{ steps.names.outputs.backend }}:${{ github.sha }}" \
+            ./backend
 
       - name: Build frontend image
-        run: docker build -t "${{ steps.names.outputs.frontend }}:${{ github.sha }}" ./frontend
+        run: |
+          docker build \
+            --build-arg "IMAGE_SOURCE=https://github.com/${GITHUB_REPOSITORY}" \
+            -t "${{ steps.names.outputs.frontend }}:${{ github.sha }}" \
+            ./frontend
 
       - name: Trivy scan backend
         uses: aquasecurity/trivy-action@v0.36.0
@@ -94,6 +102,8 @@ jobs:
     permissions:
       contents: read
       packages: write
+      attestations: write
+      id-token: write
     steps:
       - uses: actions/checkout@v4
 
@@ -103,21 +113,41 @@ jobs:
           prefix="ghcr.io/$(echo "${GITHUB_REPOSITORY}" | tr '[:upper:]' '[:lower:]')"
           echo "backend=${prefix}-backend" >> "$GITHUB_OUTPUT"
           echo "frontend=${prefix}-frontend" >> "$GITHUB_OUTPUT"
+          echo "source=https://github.com/${GITHUB_REPOSITORY}" >> "$GITHUB_OUTPUT"
 
       - uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
+          username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # Package names are taskboard-backend and taskboard-frontend, not the
+      # repository name. GITHUB_TOKEN can create those packages only when the
+      # image config carries org.opencontainers.image.source for this repo.
+      # Provenance is off so the pushed manifest is that image, still tagged
+      # with the commit SHA.
       - name: Push backend image
+        env:
+          BUILDX_NO_DEFAULT_ATTESTATIONS: "1"
         run: |
-          docker build -t "${{ steps.names.outputs.backend }}:${{ github.sha }}" ./backend
+          docker build \
+            --provenance=false \
+            --build-arg "IMAGE_SOURCE=${{ steps.names.outputs.source }}" \
+            --label "org.opencontainers.image.source=${{ steps.names.outputs.source }}" \
+            -t "${{ steps.names.outputs.backend }}:${{ github.sha }}" \
+            ./backend
           docker push "${{ steps.names.outputs.backend }}:${{ github.sha }}"
 
       - name: Push frontend image
+        env:
+          BUILDX_NO_DEFAULT_ATTESTATIONS: "1"
         run: |
-          docker build -t "${{ steps.names.outputs.frontend }}:${{ github.sha }}" ./frontend
+          docker build \
+            --provenance=false \
+            --build-arg "IMAGE_SOURCE=${{ steps.names.outputs.source }}" \
+            --label "org.opencontainers.image.source=${{ steps.names.outputs.source }}" \
+            -t "${{ steps.names.outputs.frontend }}:${{ github.sha }}" \
+            ./frontend
           docker push "${{ steps.names.outputs.frontend }}:${{ github.sha }}"
 
   terraform:

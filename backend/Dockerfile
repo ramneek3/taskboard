@@ -1,5 +1,10 @@
 FROM python:3.12-alpine
 
+# Links this image to the Git repository so GITHUB_TOKEN can create the GHCR package.
+ARG IMAGE_SOURCE="https://github.com/ramneek3/taskboard"
+LABEL org.opencontainers.image.source="${IMAGE_SOURCE}" \
+      org.opencontainers.image.description="TaskBoard API"
+
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \

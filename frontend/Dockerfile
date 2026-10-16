@@ -7,6 +7,10 @@ COPY src ./src
 RUN npm run build
 
 FROM nginxinc/nginx-unprivileged:1.27-alpine
+# Links this image to the Git repository so GITHUB_TOKEN can create the GHCR package.
+ARG IMAGE_SOURCE="https://github.com/ramneek3/taskboard"
+LABEL org.opencontainers.image.source="${IMAGE_SOURCE}" \
+      org.opencontainers.image.description="TaskBoard frontend"
 USER root
 RUN apk upgrade --no-cache && apk add --no-cache wget
 USER 101
