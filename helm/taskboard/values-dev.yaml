@@ -1,0 +1,11 @@
+frontend:
+  replicaCount: 1
+backend:
+  replicaCount: 1
+ingress:
+  enabled: true
+  host: taskboard.local
+hpa:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 2

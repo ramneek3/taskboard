@@ -1,0 +1,28 @@
+# Values for the kube-prometheus-stack chart. This file is not a live install.
+# Create the Grafana admin secret before installing. Do not commit its password.
+#
+#   kubectl -n monitoring create secret generic grafana-admin \
+#     --from-literal=admin-user=admin \
+#     --from-literal=admin-password='REPLACE_WITH_A_LONG_RANDOM_PASSWORD'
+#
+#   helm upgrade --install monitoring prometheus-community/kube-prometheus-stack \
+#     -n monitoring --create-namespace \
+#     -f monitoring/prometheus-values.yaml
+
+grafana:
+  enabled: true
+  admin:
+    existingSecret: grafana-admin
+    userKey: admin-user
+    passwordKey: admin-password
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+      searchNamespace: ALL
+
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorNamespaceSelector: {}
+    podMonitorSelectorNilUsesHelmValues: false

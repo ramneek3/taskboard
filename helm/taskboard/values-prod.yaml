@@ -1,0 +1,12 @@
+frontend:
+  replicaCount: 2
+backend:
+  replicaCount: 2
+ingress:
+  enabled: true
+  host: taskboard.example.com
+hpa:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 6
+  targetCPUUtilizationPercentage: 70

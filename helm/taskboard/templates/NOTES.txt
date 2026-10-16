@@ -1,0 +1,21 @@
+TaskBoard release {{ .Release.Name }} rendered into namespace {{ .Release.Namespace }}.
+
+Create the database secret before the pods can start. The chart does not contain a password.
+
+  kubectl -n {{ .Release.Namespace }} create secret generic {{ .Values.postgres.existingSecret }} \
+    --from-literal=username=taskboard \
+    --from-literal=password='REPLACE_WITH_A_LONG_RANDOM_PASSWORD' \
+    --from-literal=database=taskboard
+
+The API builds DATABASE_URL from that secret and the Service {{ include "taskboard.fullname" . }}-postgres.
+
+Images:
+  {{ .Values.backend.image }}:{{ .Values.backend.tag }}
+  {{ .Values.frontend.image }}:{{ .Values.frontend.tag }}
+
+Replace OWNER/REPO and the git SHA tag at install time. Do not deploy the placeholder tag.
+{{- if .Values.ingress.enabled }}
+
+Ingress host: {{ .Values.ingress.host }}
+Point that name at the ingress controller, then open http://{{ .Values.ingress.host }}/
+{{- end }}

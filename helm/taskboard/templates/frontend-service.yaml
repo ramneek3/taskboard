@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "taskboard.fullname" . }}-frontend
+  labels:
+    {{- include "taskboard.labels" . | nindent 4 }}
+    {{- include "taskboard.frontend.selector" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  selector:
+    {{- include "taskboard.frontend.selector" . | nindent 4 }}
+  ports:
+    - name: http
+      port: {{ .Values.frontend.service.port }}
+      targetPort: http

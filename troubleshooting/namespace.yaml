@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: taskboard-troubleshoot
+  labels:
+    app.kubernetes.io/name: taskboard-troubleshoot
+    purpose: disposable-exercise
