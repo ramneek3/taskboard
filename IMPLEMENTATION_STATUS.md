@@ -141,13 +141,9 @@ These were the intended local sequence if the push section below does not alread
 
 ## Push
 
-Attempted on branch `main`. Remote URL: `https://github.com/ramneek3/taskboard.git`. `origin` was not changed.
+Pushed branch `main` to `https://github.com/ramneek3/taskboard.git` only. `origin` was not changed and was not pushed to.
 
-The push did not happen. Git exited 128:
-
-```text
-fatal: could not read Username for 'https://github.com': No such device or address
-```
+The first attempt failed because the GitHub token lacked the `workflow` scope. After that scope was granted, `main` was created on the remote at `f0909c5`. This status correction is a later commit on the same branch.
 
 Local commits, oldest first:
 
@@ -162,4 +158,4 @@ Local commits, oldest first:
 | `2eced98` | Add the Helm release, Argo CD app, and monitoring assets |
 | `be26596` | Document the architecture, operations, and presentation |
 
-HEAD after the documentation commit was `be26596`. This status update is a later local commit and is also unpushed.
+`f0909c5` recorded the earlier failed attempt and is the first commit that reached GitHub. This file's push section was corrected after that push succeeded.
