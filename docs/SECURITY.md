@@ -24,7 +24,7 @@ A local scan of the images built in this workspace is recorded in `IMPLEMENTATIO
 
 ## Pipeline permissions
 
-Pull request jobs set `contents: read` only. The publish job runs only for a push to `main`. It logs in to GHCR as `github.repository_owner` with `GITHUB_TOKEN`, and its token permissions are `contents: read`, `packages: write`, `attestations: write`, and `id-token: write`. Both images set `org.opencontainers.image.source` to this repository so that token can create the `taskboard-backend` and `taskboard-frontend` packages. Tags are the commit SHA. Default Buildx provenance is disabled on that push so the manifest GitHub links is the image itself.
+Pull request jobs set `contents: read` only. The publish job runs only for a push to `main`. It logs in to GHCR as `github.repository_owner` with `GITHUB_TOKEN` and has `packages: write` (plus `attestations: write` and `id-token: write`). Images are `ghcr.io/<owner>/<repo>/backend` and `ghcr.io/<owner>/<repo>/frontend`, so they belong to the repository package. Both set `org.opencontainers.image.source` to `https://github.com/<owner>/<repo>`. Tags are the full commit SHA. The publish uses `docker buildx build --push --provenance=false` and does not push `latest`. Older runs cancel in-progress work only on pull requests.
 
 ## Application
 

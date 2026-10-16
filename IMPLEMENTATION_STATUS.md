@@ -60,7 +60,7 @@ Not applied. No cluster, VPC, or NAT gateway was created. `terraform plan` did n
 
 Actions run [38859671050](https://github.com/ramneek3/taskboard/actions/runs/38859671050) on `d5f4f6c` succeeded for Helm lint and template, Terraform validate, Test and build frontend, and Build images and Trivy gate.
 
-Publish immutable images to GHCR failed while pushing `ghcr.io/ramneek3/taskboard-backend:d5f4f6c0ca89bcdcc5627652f8e2eed638901d49`. The registry returned `denied: permission_denied: write_package`. The job already had `packages: write`. The package name is not the repository name, and the image had no `org.opencontainers.image.source` label, so `GITHUB_TOKEN` could not create it. The publish job now logs in as the repository owner, keeps `packages: write`, adds `attestations: write` and `id-token: write`, and pushes the same commit-SHA tags with that source label. This file does not claim that later publish succeeded.
+Publish on `d5f4f6c` (run 38859671050) failed pushing `ghcr.io/ramneek3/taskboard-backend:<sha>` with `denied: permission_denied: write_package`. `GITHUB_TOKEN` cannot create a package whose name is not the repository. The label-only commit `e90e9c0` (run 38861380362) was cancelled by `concurrency.cancel-in-progress` before publish ran. Images are now `ghcr.io/<owner>/<repo>/backend` and `ghcr.io/<owner>/<repo>/frontend`, tagged only with the commit SHA. This file does not claim that publish succeeded.
 
 ## Argo CD, Prometheus, Grafana
 
@@ -75,7 +75,7 @@ Publish immutable images to GHCR failed while pushing `ghcr.io/ramneek3/taskboar
 | Tests | Complete. 13 backend tests passed |
 | Git/GitHub | Files and ignore rules are here. Remote publish is the push recorded at the bottom of this file after it succeeds |
 | Docker/Compose | Complete. Built and run |
-| GitHub Actions | Live run on `d5f4f6c` passed tests, Trivy, Terraform, and Helm. Publish failed with `write_package` and is fixed in the workflow after that run |
+| GitHub Actions | Live run on `d5f4f6c` passed tests, Trivy, Terraform, and Helm. Publish failed with `write_package`. Images now use `ghcr.io/<owner>/<repo>/backend` and `.../frontend`. A green publish is not recorded here until a later run shows it |
 | Trivy | Local image scan clean for HIGH/CRITICAL. The CI scan job on `d5f4f6c` succeeded |
 | Terraform/AWS | HCL validates. Apply and destroy not done |
 | Kubernetes/Helm | Chart renders and kubeconform is clean. Not installed on a cluster |

@@ -147,8 +147,8 @@ npm run build
 - Pushes to `main` publish immutable images:
 
 ```text
-ghcr.io/<owner>/<repo>-backend:<git-sha>
-ghcr.io/<owner>/<repo>-frontend:<git-sha>
+ghcr.io/<owner>/<repo>/backend:<git-sha>
+ghcr.io/<owner>/<repo>/frontend:<git-sha>
 ```
 
 `<owner>/<repo>` is `github.repository`, lowercased. There is no `latest` tag. A live Actions run was not executed from this workspace.
@@ -179,8 +179,8 @@ kubectl -n taskboard create secret generic taskboard-db \
 
 helm upgrade --install taskboard ./helm/taskboard \
   --namespace taskboard \
-  --set backend.image=ghcr.io/OWNER/REPO-backend \
-  --set frontend.image=ghcr.io/OWNER/REPO-frontend \
+  --set backend.image=ghcr.io/OWNER/REPO/backend \
+  --set frontend.image=ghcr.io/OWNER/REPO/frontend \
   --set backend.tag="$GIT_SHA" \
   --set frontend.tag="$GIT_SHA"
 ```

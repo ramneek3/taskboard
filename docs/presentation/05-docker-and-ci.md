@@ -14,8 +14,8 @@ On pull request and on push to `main`: test, frontend build, Compose config, bot
 On push to `main` only: log in to GHCR and push
 
 ```text
-ghcr.io/<owner>/<repo>-backend:<sha>
-ghcr.io/<owner>/<repo>-frontend:<sha>
+ghcr.io/<owner>/<repo>/backend:<sha>
+ghcr.io/<owner>/<repo>/frontend:<sha>
 ```
 
 Pull request tokens cannot write packages. The tag is the commit SHA, not `latest`.

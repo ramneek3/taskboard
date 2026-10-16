@@ -15,8 +15,8 @@ Compose starts Postgres, waits until `pg_isready` succeeds, then starts the API.
 GitHub Actions publishes, only from a push to `main`:
 
 ```text
-ghcr.io/<owner>/<repo>-backend:<40-character-sha>
-ghcr.io/<owner>/<repo>-frontend:<40-character-sha>
+ghcr.io/<owner>/<repo>/backend:<40-character-sha>
+ghcr.io/<owner>/<repo>/frontend:<40-character-sha>
 ```
 
 Make the packages public, or create an image pull secret named in `imagePullSecrets`, before the cluster can pull them.
@@ -32,8 +32,8 @@ kubectl -n taskboard create secret generic taskboard-db \
 
 helm upgrade --install taskboard ./helm/taskboard \
   -n taskboard \
-  --set backend.image=ghcr.io/OWNER/REPO-backend \
-  --set frontend.image=ghcr.io/OWNER/REPO-frontend \
+  --set backend.image=ghcr.io/OWNER/REPO/backend \
+  --set frontend.image=ghcr.io/OWNER/REPO/frontend \
   --set backend.tag=GIT_SHA \
   --set frontend.tag=GIT_SHA
 ```

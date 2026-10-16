@@ -4,7 +4,7 @@ fullnameOverride: ""
 imagePullSecrets: []
 
 frontend:
-  image: ghcr.io/OWNER/REPO-frontend
+  image: ghcr.io/OWNER/REPO/frontend
   tag: replace-with-git-sha
   pullPolicy: IfNotPresent
   replicaCount: 2
@@ -20,7 +20,7 @@ frontend:
       memory: 128Mi
 
 backend:
-  image: ghcr.io/OWNER/REPO-backend
+  image: ghcr.io/OWNER/REPO/backend
   tag: replace-with-git-sha
   pullPolicy: IfNotPresent
   replicaCount: 2

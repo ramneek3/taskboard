@@ -10,7 +10,7 @@ permissions:
 
 concurrency:
   group: taskboard-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   test:
@@ -59,8 +59,8 @@ jobs:
         id: names
         run: |
           prefix="ghcr.io/$(echo "${GITHUB_REPOSITORY}" | tr '[:upper:]' '[:lower:]')"
-          echo "backend=${prefix}-backend" >> "$GITHUB_OUTPUT"
-          echo "frontend=${prefix}-frontend" >> "$GITHUB_OUTPUT"
+          echo "backend=${prefix}/backend" >> "$GITHUB_OUTPUT"
+          echo "frontend=${prefix}/frontend" >> "$GITHUB_OUTPUT"
 
       - name: Build backend image
         run: |
@@ -111,8 +111,8 @@ jobs:
         id: names
         run: |
           prefix="ghcr.io/$(echo "${GITHUB_REPOSITORY}" | tr '[:upper:]' '[:lower:]')"
-          echo "backend=${prefix}-backend" >> "$GITHUB_OUTPUT"
-          echo "frontend=${prefix}-frontend" >> "$GITHUB_OUTPUT"
+          echo "backend=${prefix}/backend" >> "$GITHUB_OUTPUT"
+          echo "frontend=${prefix}/frontend" >> "$GITHUB_OUTPUT"
           echo "source=https://github.com/${GITHUB_REPOSITORY}" >> "$GITHUB_OUTPUT"
 
       - uses: docker/login-action@v3
@@ -121,34 +121,23 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Package names are taskboard-backend and taskboard-frontend, not the
-      # repository name. GITHUB_TOKEN can create those packages only when the
-      # image config carries org.opencontainers.image.source for this repo.
-      # Provenance is off so the pushed manifest is that image, still tagged
-      # with the commit SHA.
+      # Images live under the repository package: ghcr.io/<owner>/<repo>/backend
+      # and .../frontend. A separate package name cannot be created by GITHUB_TOKEN.
       - name: Push backend image
-        env:
-          BUILDX_NO_DEFAULT_ATTESTATIONS: "1"
         run: |
-          docker build \
-            --provenance=false \
+          docker buildx build --push --provenance=false \
             --build-arg "IMAGE_SOURCE=${{ steps.names.outputs.source }}" \
             --label "org.opencontainers.image.source=${{ steps.names.outputs.source }}" \
             -t "${{ steps.names.outputs.backend }}:${{ github.sha }}" \
             ./backend
-          docker push "${{ steps.names.outputs.backend }}:${{ github.sha }}"
 
       - name: Push frontend image
-        env:
-          BUILDX_NO_DEFAULT_ATTESTATIONS: "1"
         run: |
-          docker build \
-            --provenance=false \
+          docker buildx build --push --provenance=false \
             --build-arg "IMAGE_SOURCE=${{ steps.names.outputs.source }}" \
             --label "org.opencontainers.image.source=${{ steps.names.outputs.source }}" \
             -t "${{ steps.names.outputs.frontend }}:${{ github.sha }}" \
             ./frontend
-          docker push "${{ steps.names.outputs.frontend }}:${{ github.sha }}"
 
   terraform:
     name: Terraform validate
