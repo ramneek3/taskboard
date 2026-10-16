@@ -62,7 +62,8 @@ function App() {
 
   async function onCreate(event) {
     event.preventDefault();
-    const form = new FormData(event.currentTarget);
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
     setSaving(true);
     setFormError("");
     try {
@@ -73,7 +74,7 @@ function App() {
         assignee: form.get("assignee") || "Unassigned",
         status: "TODO",
       });
-      event.currentTarget.reset();
+      formElement.reset();
       setShowForm(false);
       await load();
     } catch (err) {
