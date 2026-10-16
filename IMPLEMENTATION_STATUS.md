@@ -60,7 +60,7 @@ Not applied. No cluster, VPC, or NAT gateway was created. `terraform plan` did n
 
 Actions run [38859671050](https://github.com/ramneek3/taskboard/actions/runs/38859671050) on `d5f4f6c` succeeded for Helm lint and template, Terraform validate, Test and build frontend, and Build images and Trivy gate.
 
-Publish on `d5f4f6c` (run 38859671050) failed pushing `ghcr.io/ramneek3/taskboard-backend:<sha>` with `denied: permission_denied: write_package`. `GITHUB_TOKEN` cannot create a package whose name is not the repository. The label-only commit `e90e9c0` (run 38861380362) was cancelled by `concurrency.cancel-in-progress` before publish ran. Images are now `ghcr.io/<owner>/<repo>/backend` and `ghcr.io/<owner>/<repo>/frontend`, tagged only with the commit SHA. This file does not claim that publish succeeded.
+Publish on `d5f4f6c` (run 38859671050) failed pushing `ghcr.io/ramneek3/taskboard-backend:<sha>` with `denied: permission_denied: write_package`. `GITHUB_TOKEN` cannot create a package whose name is not the repository. The label-only commit `e90e9c0` (run 38861380362) was cancelled by `concurrency.cancel-in-progress` before publish ran. Images are now `ghcr.io/<owner>/<repo>/backend` and `ghcr.io/<owner>/<repo>/frontend`, tagged only with the commit SHA. Run [38862207060](https://github.com/ramneek3/taskboard/actions/runs/38862207060) on `9d3b073` completed with Publish immutable images to GHCR successful.
 
 ## Argo CD, Prometheus, Grafana
 
@@ -75,7 +75,7 @@ Publish on `d5f4f6c` (run 38859671050) failed pushing `ghcr.io/ramneek3/taskboar
 | Tests | Complete. 13 backend tests passed |
 | Git/GitHub | Files and ignore rules are here. Remote publish is the push recorded at the bottom of this file after it succeeds |
 | Docker/Compose | Complete. Built and run |
-| GitHub Actions | Live run on `d5f4f6c` passed tests, Trivy, Terraform, and Helm. Publish failed with `write_package`. Images now use `ghcr.io/<owner>/<repo>/backend` and `.../frontend`. A green publish is not recorded here until a later run shows it |
+| GitHub Actions | Run 38862207060 on `9d3b073` passed tests, Trivy, Terraform, Helm, and GHCR publish of `ghcr.io/ramneek3/taskboard/backend` and `.../frontend` tagged with that commit SHA |
 | Trivy | Local image scan clean for HIGH/CRITICAL. The CI scan job on `d5f4f6c` succeeded |
 | Terraform/AWS | HCL validates. Apply and destroy not done |
 | Kubernetes/Helm | Chart renders and kubeconform is clean. Not installed on a cluster |
@@ -85,7 +85,7 @@ Publish on `d5f4f6c` (run 38859671050) failed pushing `ghcr.io/ramneek3/taskboar
 ## Blockers
 
 - No AWS credentials, so plan/apply/destroy and a real EKS install cannot be finished here
-- The first Actions publish was denied by GHCR (`write_package`). The workflow change after that run is the fix; a green package push is not recorded here until a later run shows it
+- The first Actions publish was denied by GHCR (`write_package`) because the package name was not the repository. Run 38862207060 published the repository-scoped images successfully
 - No Argo CD control plane
 - Presentation video cannot honestly include those live systems until you run them
 
