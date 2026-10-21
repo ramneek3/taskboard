@@ -242,5 +242,3 @@ An EKS control plane is billed per hour (the public rate is $0.10 per hour in st
 - [Demo script](docs/DEMO_SCRIPT.md)
 - [Rubric mapping](docs/RUBRIC_MAPPING.md)
 - [Slides](docs/presentation/01-overview.md)
-- [Shot list](demo/DEMO_SCRIPT.md)
-- [Implementation status](IMPLEMENTATION_STATUS.md)

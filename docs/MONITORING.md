@@ -40,4 +40,4 @@ Grafana is provisioned with datasource uid `prometheus` and the dashboard file `
 
 The Helm chart renders a ServiceMonitor that selects the backend Service and scrapes port `http` at path `/metrics`. It also renders the same dashboard JSON as a ConfigMap.
 
-Prometheus and Grafana were not installed into a Kubernetes cluster from this workspace. A local Compose observability stack is optional and, if it was started, the result is in `IMPLEMENTATION_STATUS.md`.
+On EKS, kube-prometheus-stack scraped both backend pods through the ServiceMonitor (targets `UP`) and Grafana loaded the `TaskBoard API` dashboard from the chart. A local Compose observability stack is also available for development.

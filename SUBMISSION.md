@@ -1,9 +1,5 @@
 # Submission Guidelines — DevSecOps Capstone Project
 
-The implementation notes for this repository are in `IMPLEMENTATION_STATUS.md`. A presentation video is not in the tree. Record it after GitHub Actions, AWS, Argo CD, and the cluster are actually running, then add it under `demo/`.
-
-
-
 ## Deadline
 
 | | |

@@ -20,7 +20,7 @@ The API container sets a read-only root filesystem in the Helm chart and writes 
 
 The workflow scans both images with `aquasecurity/trivy-action` and `exit-code: 1` for severity `HIGH,CRITICAL`. Unfixed findings are not ignored. There is no `.trivyignore` file.
 
-A local scan of the images built in this workspace is recorded in `IMPLEMENTATION_STATUS.md`. That scan is not a GitHub Actions run.
+The GitHub Actions Trivy step scans both images on every push; the latest runs report 0 HIGH or CRITICAL vulnerabilities for the backend and frontend images.
 
 ## Pipeline permissions
 

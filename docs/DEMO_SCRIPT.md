@@ -1,6 +1,6 @@
 # Demo script
 
-Use this order in the presentation. The shot list and the recording checklist are in [demo/DEMO_SCRIPT.md](../demo/DEMO_SCRIPT.md).
+Use this order in the presentation.
 
 1. Open the slides in `docs/presentation/` and state what TaskBoard is: a task API and UI with the path from a laptop to a monitored cluster.
 2. Show the React UI on http://localhost:3000. Create a task, advance its status, and delete it.
