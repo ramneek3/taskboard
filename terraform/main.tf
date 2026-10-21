@@ -53,7 +53,11 @@ module "eks" {
 
   cluster_endpoint_public_access           = true
   enable_cluster_creator_admin_permissions = true
-  cluster_enabled_log_types                = var.cluster_enabled_log_types
+
+  # The account's organization SCP denies iam:CreateOpenIDConnectProvider, so IRSA
+  # is off. Nothing here needs it: the EBS CSI driver uses the node role.
+  enable_irsa               = false
+  cluster_enabled_log_types = var.cluster_enabled_log_types
 
   # EBS CSI driver so the Postgres PersistentVolumeClaim gets a gp3 volume.
   # The driver uses the node instance role (policy attached below).
