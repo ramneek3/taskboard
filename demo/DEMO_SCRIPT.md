@@ -1,5 +1,7 @@
 # Demo video script (about 12–15 minutes)
 
+The committed recording is [`taskboard-demo.mp4`](taskboard-demo.mp4). It was captured from the live stack with [`src/record-demo.py`](src/record-demo.py) (Playwright + ffmpeg), following the sections below; terminal sections replay command output captured at recording time, with captions instead of narration.
+
 Order follows SUBMISSION.md. Record with macOS screen recording (Cmd+Shift+5 → Record Entire Screen, with microphone).
 
 ## Before you press record (5 minutes)

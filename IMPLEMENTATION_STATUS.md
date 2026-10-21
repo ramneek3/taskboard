@@ -16,7 +16,7 @@ Evidence log for the TaskBoard capstone. Updated 21 October 2026 after the live 
 | M8 Kubernetes + Helm | Running | `helm list -n taskboard` → `taskboard` deployed. 2 frontend + 2 backend + Postgres pods Running; ClusterIP Services; Ingress on an NLB; HPA `cpu: 2%/70%`; PVC Bound on gp3 |
 | Argo CD | Synced | Application `taskboard` Synced/Healthy; a push to `main` rolled the backend to the new SHA with no manual step |
 | M9 Observability | Running | kube-prometheus-stack; ServiceMonitor targets for both backend pods `up`; Grafana dashboard `TaskBoard API` provisioned from the chart |
-| M10 Docs | Done except video | README, docs/, `demo/presentation.pptx` and `demo/slides.pdf` (12 slides). Video still to record |
+| M10 Docs | Done | README, docs/, `demo/presentation.pptx` and `demo/slides.pdf` (12 slides), `demo/taskboard-demo.mp4` (13.5 min walkthrough recorded against the live stack on 21 Oct 2026) |
 
 ## Problems found on real AWS, and the fixes
 
