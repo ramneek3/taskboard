@@ -55,13 +55,27 @@ module "eks" {
   enable_cluster_creator_admin_permissions = true
   cluster_enabled_log_types                = var.cluster_enabled_log_types
 
+  # EBS CSI driver so the Postgres PersistentVolumeClaim gets a gp3 volume.
+  # The driver uses the node instance role (policy attached below).
+  cluster_addons = {
+    aws-ebs-csi-driver = {
+      most_recent = true
+    }
+  }
+
   eks_managed_node_groups = {
     main = {
+      # EKS 1.33+ has no Amazon Linux 2 AMIs, so use AL2023.
+      ami_type       = "AL2023_x86_64_STANDARD"
       instance_types = var.node_instance_types
       min_size       = var.node_min_size
       max_size       = var.node_max_size
       desired_size   = var.node_desired_size
       subnet_ids     = module.vpc.private_subnets
+
+      iam_role_additional_policies = {
+        ebs_csi = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+      }
     }
   }
 

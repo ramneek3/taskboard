@@ -6,12 +6,13 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/OWNER/REPO.git
+    repoURL: https://github.com/ramneek3/taskboard.git
     targetRevision: main
     path: helm/taskboard
     helm:
       valueFiles:
         - values.yaml
+        - values-eks.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: taskboard

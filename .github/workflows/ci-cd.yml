@@ -139,6 +139,33 @@ jobs:
             -t "${{ steps.names.outputs.frontend }}:${{ github.sha }}" \
             ./frontend
 
+  gitops:
+    name: Update GitOps image tags for Argo CD
+    needs: publish
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      # Argo CD watches helm/taskboard on main. Writing the new commit SHA into
+      # values-eks.yaml is the deploy: Argo CD sees the change and syncs the cluster.
+      # Pushes made with GITHUB_TOKEN do not start another workflow run.
+      - name: Write the new image tag into values-eks.yaml
+        env:
+          SHA: ${{ github.sha }}
+        run: |
+          sed -i -E "s/^(  tag: ).*/\1${SHA}/" helm/taskboard/values-eks.yaml
+          git diff --stat
+          if git diff --quiet; then echo "Tag already current"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "Deploy ${SHA::7} to EKS through Argo CD [skip ci]"
+          for i in 1 2 3; do git pull --rebase origin main && git push origin HEAD:main && break; sleep 5; done
+
   terraform:
     name: Terraform validate
     runs-on: ubuntu-latest
@@ -169,6 +196,8 @@ jobs:
       - name: Lint and render
         run: |
           helm lint helm/taskboard
+          helm lint helm/taskboard -f helm/taskboard/values-eks.yaml
+          helm template taskboard helm/taskboard --namespace taskboard -f helm/taskboard/values-eks.yaml >/tmp/taskboard-eks.yaml
           helm template taskboard helm/taskboard --namespace taskboard >/tmp/taskboard.yaml
           grep -q "kind: HorizontalPodAutoscaler" /tmp/taskboard.yaml
           grep -q "kind: Ingress" /tmp/taskboard.yaml

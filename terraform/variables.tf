@@ -47,9 +47,9 @@ variable "node_max_size" {
 }
 
 variable "node_desired_size" {
-  description = "Desired node count. Use 1 in a short-lived demo tfvars file to cut compute cost."
+  description = "Desired node count. 3 x t3.medium fits the app, Argo CD, and kube-prometheus-stack (t3.medium allows 17 pods per node)."
   type        = number
-  default     = 2
+  default     = 3
 }
 
 variable "vpc_cidr" {

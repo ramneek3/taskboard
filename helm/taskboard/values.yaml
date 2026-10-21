@@ -4,8 +4,8 @@ fullnameOverride: ""
 imagePullSecrets: []
 
 frontend:
-  image: ghcr.io/OWNER/REPO/frontend
-  tag: replace-with-git-sha
+  image: ghcr.io/ramneek3/taskboard/frontend
+  tag: bb037c69dfe88cf49ff5a093ba2d94475fa878b0
   pullPolicy: IfNotPresent
   replicaCount: 2
   service:
@@ -20,8 +20,8 @@ frontend:
       memory: 128Mi
 
 backend:
-  image: ghcr.io/OWNER/REPO/backend
-  tag: replace-with-git-sha
+  image: ghcr.io/ramneek3/taskboard/backend
+  tag: bb037c69dfe88cf49ff5a093ba2d94475fa878b0
   pullPolicy: IfNotPresent
   replicaCount: 2
   service:
