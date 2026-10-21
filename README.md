@@ -29,7 +29,7 @@ The browser never needs the backend hostname. Nginx proxies `/api` in Docker Com
 - Database: PostgreSQL 16
 - Containers: Docker Compose
 - CI: GitHub Actions, Trivy, GHCR
-- Infrastructure: Terraform, AWS VPC and EKS in `ap-southeast-2` (not applied in this workspace)
+- Infrastructure: Terraform, AWS VPC and EKS 1.35 in `ap-southeast-2`
 - Runtime: Helm, Kubernetes Ingress, HPA, Argo CD
 - Monitoring: Prometheus scrape of `/metrics`, Grafana dashboard
 
@@ -151,11 +151,32 @@ ghcr.io/<owner>/<repo>/backend:<git-sha>
 ghcr.io/<owner>/<repo>/frontend:<git-sha>
 ```
 
-`<owner>/<repo>` is `github.repository`, lowercased. There is no `latest` tag. A live Actions run was not executed from this workspace.
+`<owner>/<repo>` is `github.repository`, lowercased. There is no `latest` tag.
+
+After a publish, the `gitops` job writes the new SHA into `helm/taskboard/values-eks.yaml` and commits it as `github-actions[bot]` with `[skip ci]`. Argo CD watches that file, so a push to `main` is a deploy:
+
+```text
+git push → pytest + build → Trivy → GHCR :<sha> → bot commit to values-eks.yaml → Argo CD sync → new pods
+```
 
 ## Terraform
 
-`terraform/` describes a VPC (two public and two private subnets, one NAT gateway) and an EKS cluster in `ap-southeast-2`. The default Kubernetes version is 1.35, which is in Amazon EKS standard support through 27 March 2027. This workspace ran `terraform fmt`, `terraform init`, and `terraform validate`. It did not run `terraform apply`.
+`terraform/` describes a VPC (two public and two private subnets, one NAT gateway) and an EKS 1.35 cluster in `ap-southeast-2` with one managed node group (2 × `m7i-flex.large`, Amazon Linux 2023) and the EBS CSI add-on. The plan creates 59 resources.
+
+The numbered scripts in [`scripts/aws/`](scripts/aws) run each stage and log to `logs/`:
+
+| Script | What it does |
+| --- | --- |
+| `00-install-tools.sh` | Homebrew install of awscli, terraform, kubectl, helm |
+| `01-aws-check.sh` | `aws sts get-caller-identity` and available EKS versions |
+| `02-terraform-plan.sh` / `03-terraform-apply.sh` | init, validate, plan, apply, kubeconfig |
+| `04-cluster-addons.sh` | gp3 StorageClass, ingress-nginx on an NLB, Metrics Server |
+| `05-monitoring.sh` | kube-prometheus-stack (must precede the app: the chart has a ServiceMonitor) |
+| `06-deploy-app.sh` | DB secret, `helm upgrade --install`, smoke test through the Ingress |
+| `07-argocd.sh` | Argo CD and the `taskboard` Application |
+| `08-open-dashboards.sh` | port-forwards for Argo CD, Prometheus, Grafana |
+| `09-load-test.sh` | traffic for the dashboards and HPA |
+| `99-destroy.sh` | removes load balancer and volumes, then `terraform destroy` |
 
 ```bash
 cd terraform
@@ -179,15 +200,12 @@ kubectl -n taskboard create secret generic taskboard-db \
 
 helm upgrade --install taskboard ./helm/taskboard \
   --namespace taskboard \
-  --set backend.image=ghcr.io/OWNER/REPO/backend \
-  --set frontend.image=ghcr.io/OWNER/REPO/frontend \
-  --set backend.tag="$GIT_SHA" \
-  --set frontend.tag="$GIT_SHA"
+  -f helm/taskboard/values-eks.yaml
 ```
 
 The chart ships Deployments, ClusterIP Services, a Postgres PVC, probes, resource requests and limits, an Ingress, a backend HPA, a ServiceMonitor, and a Grafana dashboard ConfigMap. Broken classroom manifests live only under `troubleshooting/` and use the namespace `taskboard-troubleshoot`.
 
-`gitops/argocd/application.yaml` is the Argo CD Application. Replace `https://github.com/OWNER/REPO.git` before use. It has not been applied, and this workspace has no sync status to report.
+`gitops/argocd/application.yaml` is the Argo CD Application. It tracks `helm/taskboard` on `main` with `values.yaml` and `values-eks.yaml`, with automated sync, prune, and self-heal. Helm performs the first install; Argo CD keeps the release equal to git afterwards.
 
 ## Monitoring
 
@@ -203,7 +221,16 @@ No production password is committed. Images run the API as uid 10001 and Nginx a
 
 ## Cleanup and cost
 
-An EKS control plane is billed per hour (the public rate is $0.10 per hour in standard support). A NAT gateway is billed per hour plus data processing. Two `t3.medium` nodes add compute and EBS charges. Delete the Helm release and run `terraform destroy` when the demo ends. Commands are in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+An EKS control plane is billed per hour (the public rate is $0.10 per hour in standard support). A NAT gateway is billed per hour plus data processing. Two `m7i-flex.large` nodes and the NLB add compute, EBS, and load balancer charges. In `ap-southeast-2` the whole stack is roughly $0.40 per hour. Delete the Helm release and run `terraform destroy` when the demo ends. Commands are in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+
+## Known issues and limitations
+
+- **Region is fixed to `ap-southeast-2`.** The AWS account sits in an AWS Organization whose SCP denies EC2 and EKS in every other region.
+- **No IRSA.** The same SCP denies `iam:CreateOpenIDConnectProvider`, so `enable_irsa = false`. The EBS CSI driver uses the node role (`AmazonEBSCSIDriverPolicy`) instead of a pod-scoped role.
+- **Node type is `m7i-flex.large`.** The account is on the AWS Free plan, which only launches free-tier-eligible types; `t3.medium` is rejected.
+- **ingress-nginx** is used for the classroom Ingress. The upstream project is in maintenance-only mode; a production setup would use the AWS Load Balancer Controller.
+- **Postgres runs in the cluster** on a single gp3 PVC. Production would use Amazon RDS.
+- **The Ingress has no host rule**, so the app answers on the NLB hostname over plain HTTP. There is no TLS or DNS name.
 
 ## Links
 

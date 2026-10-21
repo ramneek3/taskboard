@@ -32,10 +32,7 @@ kubectl -n taskboard create secret generic taskboard-db \
 
 helm upgrade --install taskboard ./helm/taskboard \
   -n taskboard \
-  --set backend.image=ghcr.io/OWNER/REPO/backend \
-  --set frontend.image=ghcr.io/OWNER/REPO/frontend \
-  --set backend.tag=GIT_SHA \
-  --set frontend.tag=GIT_SHA
+  -f helm/taskboard/values-eks.yaml
 ```
 
 `helm template` renders manifests. It does not contact a cluster. A real install also needs:
@@ -74,7 +71,7 @@ These are public list-price shapes, not a quote. Check the AWS pricing calculato
 
 - EKS control plane in standard support: $0.10 per hour. Extended support is higher. Version 1.35 is still in standard support on the date above.
 - One NAT gateway: hourly charge plus a per-GB data processing charge. The config uses a single NAT to keep the classroom bill smaller than one NAT per AZ.
-- Two `t3.medium` nodes in `ap-southeast-2`, plus their EBS volumes. Set `node_desired_size` and `node_min_size` to 1 in your private tfvars for a short demo.
+- Two `m7i-flex.large` nodes in `ap-southeast-2` (free-tier eligible, which the AWS Free plan requires), plus their EBS volumes.
 - Control plane logs are off by default so CloudWatch log storage is not turned on accidentally.
 - A load balancer created by an ingress controller is extra and is not destroyed by `terraform destroy` if it was created by Kubernetes.
 
