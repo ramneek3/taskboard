@@ -87,7 +87,7 @@ async function icon(Comp, color, size = 256) {
   s = pres.addSlide({ masterName: 'CONTENT', sectionTitle: 'Architecture' });
   s.addText('Architecture on AWS', { placeholder: 'title' });
   card(s, 2.15, 1.2, 7.35, 3.95, 'E3EEEC');
-  body(s, 'EKS cluster · ap-southeast-2 · 3 × t3.medium in private subnets', { x: 2.35, y: 1.28, w: 7, h: 0.3, fontSize: 12, bold: true, color: H.deep });
+  body(s, 'EKS cluster · ap-southeast-2 · 2 × m7i-flex.large in private subnets', { x: 2.35, y: 1.28, w: 7, h: 0.3, fontSize: 12, bold: true, color: H.deep });
   const box = (x, y, w, h, t, fill, fc) => { card(s, x, y, w, h, fill); s.addText(t, { isTextBox: true, x, y, w, h, align: 'center', valign: 'middle', fontFace: 'Calibri', fontSize: 12, bold: true, color: fc || H.white, margin: 2 }); };
   const arrow = (x1, y1, x2, y2) => s.addShape(pres.shapes.LINE, { x: Math.min(x1, x2), y: Math.min(y1, y2), w: Math.abs(x2 - x1) || 0.001, h: Math.abs(y2 - y1) || 0.001, flipV: y2 < y1, line: { color: H.slate, width: 1.5, endArrowType: 'triangle' } });
   box(0.5, 2.6, 1.3, 0.7, 'Browser', H.ink);
@@ -158,7 +158,7 @@ async function icon(Comp, color, size = 256) {
     const x = 0.75 + i * 2.55;
     body(s, az, { x, y: 1.7, w: 2.3, h: 0.25, fontSize: 11, color: H.slate });
     box(x, 2.0, 2.3, 0.75, 'public subnet\nNLB' + (i === 0 ? ' · NAT gateway' : ''), H.navy);
-    box(x, 3.0, 2.3, 1.05, 'private subnet\nEKS nodes (t3.medium)', H.teal);
+    box(x, 3.0, 2.3, 1.05, 'private subnet\nEKS node (m7i-flex.large)', H.teal);
   });
   box(0.75, 4.3, 4.85, 0.6, 'EKS 1.35 control plane · AL2023 nodes · EBS CSI add-on', H.deep);
   body(s, [
@@ -167,7 +167,7 @@ async function icon(Comp, color, size = 256) {
     { text: 'Plan: 59 resources to add, 0 to change', options: { bullet: true, breakLine: true } },
     { text: 'Region pinned to ap-southeast-2: the account\'s organization SCP denies every other region', options: { bullet: true, breakLine: true } },
     { text: 'tfvars.example committed; real tfvars and state never are', options: { bullet: true, breakLine: true } },
-    { text: 'About $0.35/hour while up; destroyed after the demo', options: { bullet: true } },
+    { text: 'About $0.40/hour while up; destroyed after the demo', options: { bullet: true } },
   ], { x: 6.1, y: 1.3, w: 3.4, h: 3.8, fontSize: 13, paraSpaceAfter: 6 });
 
   // 8 Kubernetes + Helm + Argo
@@ -227,7 +227,7 @@ async function icon(Comp, color, size = 256) {
   const ls = [
     ['Read the platform, not the tutorial', 'EKS 1.35 ships no Amazon Linux 2 node images; the node group had to move to AL2023.'],
     ['Storage is not free on EKS', 'Without the EBS CSI add-on and a gp3 StorageClass, the Postgres PVC stays Pending forever.'],
-    ['Org guardrails win', 'An SCP denied every region except ap-southeast-2; checking with dry-run calls saved a failed apply.'],
+    ['Org guardrails win', 'The org SCP allows only ap-southeast-2 and blocks OIDC providers; the Free plan rejects t3.medium, so nodes run m7i-flex.large.'],
     ['Tokens have scopes', 'GITHUB_TOKEN can only publish packages under the repository name, so images live at ghcr.io/<owner>/<repo>/<image>.'],
     ['Liveness ≠ readiness', '/health stays cheap; /ready checks the database so traffic only reaches pods that can serve it.'],
     ['Destroy is part of the plan', 'Load balancers and volumes created by Kubernetes must go before terraform destroy can delete the VPC.'],
