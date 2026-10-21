@@ -13,9 +13,15 @@ Images:
   {{ .Values.backend.image }}:{{ .Values.backend.tag }}
   {{ .Values.frontend.image }}:{{ .Values.frontend.tag }}
 
-Replace OWNER/REPO and the git SHA tag at install time. Do not deploy the placeholder tag.
 {{- if .Values.ingress.enabled }}
+{{- if .Values.ingress.host }}
 
 Ingress host: {{ .Values.ingress.host }}
 Point that name at the ingress controller, then open http://{{ .Values.ingress.host }}/
+{{- else }}
+
+The Ingress has no host rule, so it answers on the controller's load balancer:
+  kubectl -n ingress-nginx get svc ingress-nginx-controller \
+    -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
+{{- end }}
 {{- end }}

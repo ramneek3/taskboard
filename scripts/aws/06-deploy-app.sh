@@ -40,7 +40,7 @@ kubectl -n "$APP_NS" get pvc
 
 LB=$(kubectl -n ingress-nginx get svc ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
 step "Smoke test through the Ingress: http://$LB"
-for i in $(seq 1 30); do curl -fsS "http://$LB/api/stats" && break; echo "waiting for NLB DNS..."; sleep 10; done
+for i in $(seq 1 30); do curl -fsS -m 10 "http://$LB/api/stats" && break; echo "waiting for NLB DNS..."; sleep 10; done || true
 echo
 curl -s -o /dev/null -w "frontend / -> HTTP %{http_code}\n" "http://$LB/"
 echo "Open in your browser: http://$LB"
