@@ -1,6 +1,6 @@
 # Terraform
 
-This directory describes an AWS VPC and an EKS cluster in `ap-south-1`. It is not applied from this workspace.
+This directory describes an AWS VPC and an EKS cluster in `ap-southeast-2`. It is not applied from this workspace.
 
 ## Layout
 
@@ -22,7 +22,7 @@ terraform fmt -recursive
 terraform validate
 terraform plan
 terraform apply
-aws eks update-kubeconfig --region ap-south-1 --name taskboard-eks
+aws eks update-kubeconfig --region ap-southeast-2 --name taskboard-eks
 ```
 
 `terraform plan` and `terraform apply` need AWS credentials. Do not commit those credentials or any `*.tfstate` file.

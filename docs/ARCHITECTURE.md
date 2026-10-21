@@ -28,7 +28,7 @@ flowchart TB
   images --> trivy[Trivy HIGH and CRITICAL]
   trivy --> ghcr[GHCR sha tags]
   ghcr --> argo[Argo CD Application]
-  tf[Terraform VPC and EKS] --> cluster[EKS ap-south-1]
+  tf[Terraform VPC and EKS] --> cluster[EKS ap-southeast-2]
   argo --> helm[Helm release]
   helm --> cluster
   subgraph ns [namespace taskboard]

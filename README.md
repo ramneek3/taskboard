@@ -29,7 +29,7 @@ The browser never needs the backend hostname. Nginx proxies `/api` in Docker Com
 - Database: PostgreSQL 16
 - Containers: Docker Compose
 - CI: GitHub Actions, Trivy, GHCR
-- Infrastructure: Terraform, AWS VPC and EKS in `ap-south-1` (not applied in this workspace)
+- Infrastructure: Terraform, AWS VPC and EKS in `ap-southeast-2` (not applied in this workspace)
 - Runtime: Helm, Kubernetes Ingress, HPA, Argo CD
 - Monitoring: Prometheus scrape of `/metrics`, Grafana dashboard
 
@@ -155,7 +155,7 @@ ghcr.io/<owner>/<repo>/frontend:<git-sha>
 
 ## Terraform
 
-`terraform/` describes a VPC (two public and two private subnets, one NAT gateway) and an EKS cluster in `ap-south-1`. The default Kubernetes version is 1.35, which is in Amazon EKS standard support through 27 March 2027. This workspace ran `terraform fmt`, `terraform init`, and `terraform validate`. It did not run `terraform apply`.
+`terraform/` describes a VPC (two public and two private subnets, one NAT gateway) and an EKS cluster in `ap-southeast-2`. The default Kubernetes version is 1.35, which is in Amazon EKS standard support through 27 March 2027. This workspace ran `terraform fmt`, `terraform init`, and `terraform validate`. It did not run `terraform apply`.
 
 ```bash
 cd terraform
@@ -163,7 +163,7 @@ cp terraform.tfvars.example terraform.tfvars
 terraform init
 terraform plan
 terraform apply
-aws eks update-kubeconfig --region ap-south-1 --name taskboard-eks
+aws eks update-kubeconfig --region ap-southeast-2 --name taskboard-eks
 ```
 
 Destroy when you are done. Cost notes are in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).

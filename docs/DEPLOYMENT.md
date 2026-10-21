@@ -61,7 +61,7 @@ cp terraform.tfvars.example terraform.tfvars
 terraform init
 terraform plan
 terraform apply
-aws eks update-kubeconfig --region ap-south-1 --name taskboard-eks
+aws eks update-kubeconfig --region ap-southeast-2 --name taskboard-eks
 ```
 
 The default cluster version is 1.35. Amazon EKS standard support on 16 October 2026 includes 1.34, 1.35, 1.36, and 1.37. Version 1.35 remains in standard support through 27 March 2027. Extended-support versions cost more. Do not commit `terraform.tfvars` or `*.tfstate`.
@@ -74,7 +74,7 @@ These are public list-price shapes, not a quote. Check the AWS pricing calculato
 
 - EKS control plane in standard support: $0.10 per hour. Extended support is higher. Version 1.35 is still in standard support on the date above.
 - One NAT gateway: hourly charge plus a per-GB data processing charge. The config uses a single NAT to keep the classroom bill smaller than one NAT per AZ.
-- Two `t3.medium` nodes in `ap-south-1`, plus their EBS volumes. Set `node_desired_size` and `node_min_size` to 1 in your private tfvars for a short demo.
+- Two `t3.medium` nodes in `ap-southeast-2`, plus their EBS volumes. Set `node_desired_size` and `node_min_size` to 1 in your private tfvars for a short demo.
 - Control plane logs are off by default so CloudWatch log storage is not turned on accidentally.
 - A load balancer created by an ingress controller is extra and is not destroyed by `terraform destroy` if it was created by Kubernetes.
 

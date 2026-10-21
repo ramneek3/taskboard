@@ -2,7 +2,7 @@
 
 ## Terraform
 
-Region `ap-south-1`. One VPC, two public subnets, two private subnets, one NAT gateway, one EKS managed node group. Default Kubernetes version `1.35` (EKS standard support through 27 March 2027).
+Region `ap-southeast-2`. One VPC, two public subnets, two private subnets, one NAT gateway, one EKS managed node group. Default Kubernetes version `1.35` (EKS standard support through 27 March 2027).
 
 `terraform validate` checks the configuration. `terraform apply` creates billable resources. Destroy them the same day.
 

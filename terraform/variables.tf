@@ -1,7 +1,7 @@
 variable "aws_region" {
-  description = "AWS region for the VPC and EKS cluster."
+  description = "AWS region for the VPC and EKS cluster. The AWS Organization SCP on this account only allows ap-southeast-2 (Sydney)."
   type        = string
-  default     = "ap-south-1"
+  default     = "ap-southeast-2"
 }
 
 variable "environment" {

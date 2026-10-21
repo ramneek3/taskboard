@@ -6,12 +6,12 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$REPO_ROOT"
 
-export AWS_REGION="${AWS_REGION:-ap-south-1}"
+export AWS_REGION="${AWS_REGION:-ap-southeast-2}"
 export AWS_DEFAULT_REGION="$AWS_REGION"
 export CLUSTER_NAME="${CLUSTER_NAME:-taskboard-eks}"
 export APP_NS="taskboard"
 
-for b in /opt/homebrew/bin "$HOME/.homebrew/bin" /usr/local/bin; do
+for b in /opt/homebrew/bin "$HOME/.homebrew/bin" /usr/local/bin "$HOME/bin"; do
   [ -d "$b" ] && PATH="$b:$PATH"
 done
 export PATH
