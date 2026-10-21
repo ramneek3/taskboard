@@ -29,9 +29,9 @@ variable "cluster_enabled_log_types" {
 }
 
 variable "node_instance_types" {
-  description = "Instance types for the managed node group."
+  description = "Instance types for the managed node group. m7i-flex.large is free-tier eligible, so it also works on AWS Free plan accounts."
   type        = list(string)
-  default     = ["t3.medium"]
+  default     = ["m7i-flex.large"]
 }
 
 variable "node_min_size" {
@@ -43,13 +43,13 @@ variable "node_min_size" {
 variable "node_max_size" {
   description = "Maximum node count."
   type        = number
-  default     = 4
+  default     = 3
 }
 
 variable "node_desired_size" {
-  description = "Desired node count. 3 x t3.medium fits the app, Argo CD, and kube-prometheus-stack (t3.medium allows 17 pods per node)."
+  description = "Desired node count. 2 x m7i-flex.large (29 pods each) fits the app, Argo CD, and kube-prometheus-stack."
   type        = number
-  default     = 3
+  default     = 2
 }
 
 variable "vpc_cidr" {

@@ -3,11 +3,12 @@ environment     = "dev"
 cluster_name    = "taskboard-eks"
 cluster_version = "1.35"
 
-# 3 x t3.medium is enough for the app, Argo CD, and kube-prometheus-stack.
-node_instance_types = ["t3.medium"]
+# AWS Free plan accounts may only launch free-tier types. 2 x m7i-flex.large
+# (2 vCPU, 8 GiB, 29 pods each) fits the app, Argo CD, and kube-prometheus-stack.
+node_instance_types = ["m7i-flex.large"]
 node_min_size       = 2
-node_max_size       = 4
-node_desired_size   = 3
+node_max_size       = 3
+node_desired_size   = 2
 
 # Leave empty to avoid CloudWatch log charges.
 cluster_enabled_log_types = []
