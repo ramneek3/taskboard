@@ -47,3 +47,7 @@ override.tf.json
 # Script logs
 logs/
 terraform/tfplan
+
+# Local demo tools and credentials (scripts/aws/demo-env.sh)
+.demo/
+*_accessKeys.csv
