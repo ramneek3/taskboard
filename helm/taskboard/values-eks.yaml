@@ -1,9 +1,9 @@
 # Values for the AWS EKS release. CI rewrites the two image tags below on every
 # push to main (gitops job), and Argo CD syncs the change into the cluster.
 backend:
-  tag: 8b7bd2326e3e3020c36e7762b749b6072fb6e345
+  tag: 4ea5039b338cae98e37c2a9a31a26fcc1db049bb
 frontend:
-  tag: 8b7bd2326e3e3020c36e7762b749b6072fb6e345
+  tag: 4ea5039b338cae98e37c2a9a31a26fcc1db049bb
 
 postgres:
   storageClass: gp3
