@@ -32,7 +32,11 @@ Evidence log for the TaskBoard capstone. Updated 21 October 2026 after the live 
 
 ## Cost and destroy
 
-About $0.40/hour while the stack is up (EKS control plane, NAT gateway, 2 nodes, NLB, EBS). Tear down after recording:
+About $0.40/hour while the stack was up (EKS control plane, NAT gateway, 2 nodes, NLB, EBS).
+
+**Destroyed on 21 October 2026** after the demo was recorded: `scripts/aws/99-destroy.sh` removed the Helm releases, load balancer and volume, then `terraform destroy` reported `Destroy complete! Resources: 58 destroyed.` A follow-up sweep found no EKS clusters, EC2 instances, EBS volumes, load balancers, NAT gateways or Elastic IPs left in `ap-southeast-2`.
+
+To bring the stack back, run the scripts again from `02-terraform-plan.sh`. To tear it down:
 
 ```bash
 bash scripts/aws/99-destroy.sh
